@@ -1,0 +1,41 @@
+version: "3.7"
+
+networks:
+    app-network:
+        driver: bridge
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: web8app
+        ports:
+            - "8200:80"
+        volumes:
+            - ./ConsoleApp1/appsettings.json:/app/appsettings.json
+        networks:
+            - app-network
+    db:
+        image: "mcr.microsoft.com/mssql/server"
+        ports:
+            - "3309:1433"
+        volumes:
+            - sqlvolume:/var/opt/mssql
+        environment:
+            SA_PASSWORD: "P@ssw0rd"
+            ACCEPT_EULA: "Y"
+        networks:
+            - app-network
+#    console:
+#        build:
+#            context: .
+#            dockerfile: ./ConsoleApp1/Dockerfile
+#        container_name: web8
+#        image:  web8console:latest
+#        restart: unless-stopped
+#        ports:
+#            - "8300:80"
+#        networks:
+#            - app-network
+volumes:
+    sqlvolume:
